@@ -12,7 +12,6 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-#include "layer/requantize.h"
 #include "testutil.h"
 
 static int test_requantize(const ncnn::Mat& a, int scale_in_data_size, int scale_out_data_size, int bias_data_size, int activation_type, float alpha, float beta)
@@ -34,8 +33,11 @@ static int test_requantize(const ncnn::Mat& a, int scale_in_data_size, int scale
     if (bias_data_size)
         weights[2] = RandomMat(bias_data_size);
 
+    Randomize(weights[0], 0.0001, 0.001);
+    Randomize(weights[1], 10, 100);
+
     int flag = TEST_LAYER_DISABLE_AUTO_INPUT_CASTING;
-    int ret = test_layer<ncnn::Requantize>("Requantize", pd, weights, a, 1, 0, flag);
+    int ret = test_layer("Requantize", pd, weights, a, 1, 0, flag);
     if (ret != 0)
     {
         fprintf(stderr, "test_requantize failed a.dims=%d a=(%d %d %d) scale_in_data_size=%d scale_out_data_size=%d bias_data_size=%d act=%d actparams=[%f,%f]\n", a.dims, a.w, a.h, a.c, scale_in_data_size, scale_out_data_size, bias_data_size, activation_type, activation_params[0], activation_params[1]);
@@ -74,8 +76,11 @@ static int test_requantize_pack8(const ncnn::Mat& a, int scale_in_data_size, int
     if (bias_data_size)
         weights[2] = RandomMat(bias_data_size);
 
+    Randomize(weights[0], 0.0001, 0.001);
+    Randomize(weights[1], 10, 100);
+
     int flag = TEST_LAYER_DISABLE_AUTO_INPUT_CASTING | TEST_LAYER_ENABLE_FORCE_INPUT_PACK8;
-    int ret = test_layer<ncnn::Requantize>("Requantize", pd, weights, a, 1, 0, flag);
+    int ret = test_layer("Requantize", pd, weights, a, 1, 0, flag);
     if (ret != 0)
     {
         fprintf(stderr, "test_requantize_pack8 failed a.dims=%d a=(%d %d %d) scale_in_data_size=%d scale_out_data_size=%d bias_data_size=%d act=%d actparams=[%f,%f]\n", a.dims, a.w, a.h, a.c, scale_in_data_size, scale_out_data_size, bias_data_size, activation_type, activation_params[0], activation_params[1]);
